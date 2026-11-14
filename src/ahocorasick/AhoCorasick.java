@@ -101,4 +101,18 @@ public class AhoCorasick {
         int target = next.get(state)[c];
         return target != -1 ? target : 0;
     }
+
+    public long count(String text) {
+        long total = 0;
+        int state = 0;
+        for (int i = 0; i < text.length(); i++) {
+            state = step(state, text.charAt(i));
+            int node = patternAt.get(state) != -1 ? state : outputLink[state];
+            while (node != 0) {
+                total++;
+                node = outputLink[node];
+            }
+        }
+        return total;
+    }
 }
