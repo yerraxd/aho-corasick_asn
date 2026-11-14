@@ -31,6 +31,14 @@ public class AhoCorasick {
     }
 
     private void insert(String pattern, int index) {
+        if (pattern == null || pattern.isEmpty()) {
+            throw new IllegalArgumentException("Empty pattern at index " + index);
+        }
+        for (int i = 0; i < pattern.length(); i++) {
+            if (pattern.charAt(i) >= ALPHABET) {
+                throw new IllegalArgumentException("Non-ASCII character in pattern " + index);
+            }
+        }
         int state = 0;
         for (int i = 0; i < pattern.length(); i++) {
             char c = pattern.charAt(i);
