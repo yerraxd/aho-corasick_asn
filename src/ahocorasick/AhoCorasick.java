@@ -1,5 +1,6 @@
 package ahocorasick;
 
+import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -11,10 +12,14 @@ public class AhoCorasick {
     private final String[] patterns;
     private final List<int[]> next = new ArrayList<>();
     private final List<Integer> patternAt = new ArrayList<>();
+    private int[] fail;
+    private int[] outputLink;
 
     public AhoCorasick(String[] patterns) {
         this.patterns = patterns.clone();
         addNode();
+        buildTrie();
+        buildLinks();
     }
 
     private int addNode() {
@@ -24,6 +29,7 @@ public class AhoCorasick {
         patternAt.add(-1);
         return next.size() - 1;
     }
+
     private void buildTrie() {
         for (int index = 0; index < patterns.length; index++) {
             insert(patterns[index], index);
@@ -52,5 +58,18 @@ public class AhoCorasick {
             throw new IllegalArgumentException("Duplicate pattern: " + pattern);
         }
         patternAt.set(state, index);
+    }
+
+    private void buildLinks() {
+        int size = next.size();
+        fail = new int[size];
+        outputLink = new int[size];
+        ArrayDeque<Integer> queue = new ArrayDeque<>();
+        for (int c = 0; c < ALPHABET; c++) {
+            int child = next.get(0)[c];
+            if (child != -1) {
+                queue.add(child);
+            }
+        }
     }
 }
