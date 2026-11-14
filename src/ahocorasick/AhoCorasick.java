@@ -24,4 +24,22 @@ public class AhoCorasick {
         patternAt.add(-1);
         return next.size() - 1;
     }
+    private void buildTrie() {
+        for (int index = 0; index < patterns.length; index++) {
+            insert(patterns[index], index);
+        }
+    }
+
+    private void insert(String pattern, int index) {
+        int state = 0;
+        for (int i = 0; i < pattern.length(); i++) {
+            char c = pattern.charAt(i);
+            if (next.get(state)[c] == -1) {
+                int created = addNode();
+                next.get(state)[c] = created;
+            }
+            state = next.get(state)[c];
+        }
+        patternAt.set(state, index);
+    }
 }
