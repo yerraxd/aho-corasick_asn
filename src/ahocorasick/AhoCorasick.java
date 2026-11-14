@@ -48,6 +48,9 @@ public class AhoCorasick {
             }
             state = next.get(state)[c];
         }
+        if (patternAt.get(state) != -1) {
+            throw new IllegalArgumentException("Duplicate pattern: " + pattern);
+        }
         patternAt.set(state, index);
     }
 }
