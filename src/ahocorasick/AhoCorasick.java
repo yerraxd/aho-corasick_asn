@@ -90,4 +90,15 @@ public class AhoCorasick {
             }
         }
     }
+
+    private int step(int state, char c) {
+        if (c >= ALPHABET) {
+            return 0;
+        }
+        while (state != 0 && next.get(state)[c] == -1) {
+            state = fail[state];
+        }
+        int target = next.get(state)[c];
+        return target != -1 ? target : 0;
+    }
 }
