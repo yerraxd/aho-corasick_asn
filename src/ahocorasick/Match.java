@@ -1,4 +1,4 @@
 package ahocorasick;
 
-public class Match {
+public record Match(int start, int patternIndex) {
 }
