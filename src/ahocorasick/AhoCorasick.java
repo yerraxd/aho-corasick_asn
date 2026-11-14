@@ -115,4 +115,19 @@ public class AhoCorasick {
         }
         return total;
     }
+
+    public List<Match> search(String text) {
+        List<Match> matches = new ArrayList<>();
+        int state = 0;
+        for (int i = 0; i < text.length(); i++) {
+            state = step(state, text.charAt(i));
+            int node = patternAt.get(state) != -1 ? state : outputLink[state];
+            while (node != 0) {
+                int index = patternAt.get(node);
+                matches.add(new Match(i - patterns[index].length() + 1, index));
+                node = outputLink[node];
+            }
+        }
+        return matches;
+    }
 }
