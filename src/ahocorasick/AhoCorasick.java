@@ -71,5 +71,21 @@ public class AhoCorasick {
                 queue.add(child);
             }
         }
+        while (!queue.isEmpty()) {
+            int u = queue.poll();
+            for (int c = 0; c < ALPHABET; c++) {
+                int v = next.get(u)[c];
+                if (v == -1) {
+                    continue;
+                }
+                int f = fail[u];
+                while (f != 0 && next.get(f)[c] == -1) {
+                    f = fail[f];
+                }
+                int candidate = next.get(f)[c];
+                fail[v] = candidate != -1 ? candidate : 0;
+                queue.add(v);
+            }
+        }
     }
 }
