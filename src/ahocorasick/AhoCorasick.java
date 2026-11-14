@@ -84,6 +84,8 @@ public class AhoCorasick {
                 }
                 int candidate = next.get(f)[c];
                 fail[v] = candidate != -1 ? candidate : 0;
+                int target = fail[v];
+                outputLink[v] = patternAt.get(target) != -1 ? target : outputLink[target];
                 queue.add(v);
             }
         }
