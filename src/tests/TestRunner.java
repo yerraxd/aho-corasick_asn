@@ -5,6 +5,7 @@ import ahocorasick.Match;
 
 import java.util.HashSet;
 import java.util.List;
+import java.util.Random;
 import java.util.Set;
 
 public class TestRunner {
@@ -19,6 +20,7 @@ public class TestRunner {
         run("no match and empty text", TestRunner::noMatchAndEmptyText);
         run("pattern equals text", TestRunner::patternEqualsText);
         run("duplicate and empty patterns rejected", TestRunner::invalidPatterns);
+        run("matches naive search on random data", TestRunner::randomAgainstNaive);
         System.out.println(passed + " passed, " + failed + " failed");
         if (failed > 0) {
             System.exit(1);
@@ -92,5 +94,43 @@ public class TestRunner {
         }
         assertEquals(true, duplicateRejected);
         assertEquals(true, emptyRejected);
+    }
+
+    private static Set<Match> naive(String[] patterns, String text) {
+        Set<Match> result = new HashSet<>();
+        for (int p = 0; p < patterns.length; p++) {
+            int from = 0;
+            int at;
+            while ((at = text.indexOf(patterns[p], from)) != -1) {
+                result.add(new Match(at, p));
+                from = at + 1;
+            }
+        }
+        return result;
+    }
+
+    private static String randomString(Random random, int length, int alphabet) {
+        StringBuilder sb = new StringBuilder();
+        for (int i = 0; i < length; i++) {
+            sb.append((char) ('a' + random.nextInt(alphabet)));
+        }
+        return sb.toString();
+    }
+
+    private static String[] randomPatterns(Random random, int count) {
+        Set<String> unique = new HashSet<>();
+        while (unique.size() < count) {
+            unique.add(randomString(random, 1 + random.nextInt(5), 3));
+        }
+        return unique.toArray(new String[0]);
+    }
+
+    private static void randomAgainstNaive() {
+        Random random = new Random(1);
+        for (int round = 0; round < 200; round++) {
+            String[] patterns = randomPatterns(random, 1 + random.nextInt(8));
+            String text = randomString(random, random.nextInt(60), 3);
+            assertEquals(naive(patterns, text), asSet(new AhoCorasick(patterns).search(text)));
+        }
     }
 }
