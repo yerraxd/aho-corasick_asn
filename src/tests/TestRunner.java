@@ -1,5 +1,6 @@
 package tests;
 
+import ahocorasick.AhoCorasick;
 import ahocorasick.Match;
 
 import java.util.HashSet;
@@ -12,6 +13,8 @@ public class TestRunner {
     private static int failed;
 
     public static void main(String[] args) {
+        run("classic ushers example", TestRunner::classicExample);
+        run("single character patterns", TestRunner::singleCharacters);
         System.out.println(passed + " passed, " + failed + " failed");
         if (failed > 0) {
             System.exit(1);
@@ -41,5 +44,16 @@ public class TestRunner {
 
     private static Set<Match> asSet(List<Match> matches) {
         return new HashSet<>(matches);
+    }
+
+    private static void classicExample() {
+        AhoCorasick ac = new AhoCorasick(new String[]{"he", "she", "his", "hers"});
+        Set<Match> expected = Set.of(new Match(1, 1), new Match(2, 0), new Match(2, 3));
+        assertEquals(expected, asSet(ac.search("ushers")));
+    }
+
+    private static void singleCharacters() {
+        AhoCorasick ac = new AhoCorasick(new String[]{"a", "b"});
+        assertEquals(Set.of(new Match(0, 0), new Match(1, 1), new Match(2, 0)), asSet(ac.search("aba")));
     }
 }
