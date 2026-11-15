@@ -15,6 +15,9 @@ public class TestRunner {
     public static void main(String[] args) {
         run("classic ushers example", TestRunner::classicExample);
         run("single character patterns", TestRunner::singleCharacters);
+        run("overlapping and nested patterns", TestRunner::overlappingAndNested);
+        run("no match and empty text", TestRunner::noMatchAndEmptyText);
+        run("pattern equals text", TestRunner::patternEqualsText);
         System.out.println(passed + " passed, " + failed + " failed");
         if (failed > 0) {
             System.exit(1);
@@ -55,5 +58,21 @@ public class TestRunner {
     private static void singleCharacters() {
         AhoCorasick ac = new AhoCorasick(new String[]{"a", "b"});
         assertEquals(Set.of(new Match(0, 0), new Match(1, 1), new Match(2, 0)), asSet(ac.search("aba")));
+    }
+
+    private static void overlappingAndNested() {
+        AhoCorasick ac = new AhoCorasick(new String[]{"a", "aa", "aaa"});
+        assertEquals(12L, ac.count("aaaaa"));
+    }
+
+    private static void noMatchAndEmptyText() {
+        AhoCorasick ac = new AhoCorasick(new String[]{"abc", "xyz"});
+        assertEquals(0, ac.search("abxabyxz").size());
+        assertEquals(0, ac.search("").size());
+    }
+
+    private static void patternEqualsText() {
+        AhoCorasick ac = new AhoCorasick(new String[]{"hello"});
+        assertEquals(List.of(new Match(0, 0)), ac.search("hello"));
     }
 }
