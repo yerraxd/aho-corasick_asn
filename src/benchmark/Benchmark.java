@@ -3,6 +3,10 @@ package benchmark;
 import ahocorasick.AhoCorasick;
 import ahocorasick.Kmp;
 
+import java.io.IOException;
+import java.io.PrintWriter;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.Locale;
 
 public class Benchmark {
@@ -10,6 +14,23 @@ public class Benchmark {
     private static final int[] PATTERN_COUNTS = {10, 100, 1000};
     private static final int[] TEXT_LENGTHS = {1000, 10000, 100000};
     private static final int RUNS = 5;
+
+    public static void main(String[] args) throws IOException {
+        warmUp();
+        Files.createDirectories(Path.of("results"));
+        try (PrintWriter out = new PrintWriter(Files.newBufferedWriter(Path.of("results/results.csv")))) {
+            String header = "patterns,textLength,matches,acBuildMs,acSearchMs,acTotalMs,kmpTotalMs";
+            out.println(header);
+            System.out.println(header);
+            for (int patternCount : PATTERN_COUNTS) {
+                for (int textLength : TEXT_LENGTHS) {
+                    String line = measure(patternCount, textLength);
+                    out.println(line);
+                    System.out.println(line);
+                }
+            }
+        }
+    }
 
     private static String measure(int patternCount, int textLength) {
         String[] patterns = DataGenerator.patterns(patternCount, 100 + patternCount);
