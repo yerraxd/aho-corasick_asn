@@ -1,6 +1,7 @@
 package tests;
 
 import ahocorasick.AhoCorasick;
+import ahocorasick.Kmp;
 import ahocorasick.Match;
 
 import java.util.HashSet;
@@ -21,6 +22,7 @@ public class TestRunner {
         run("pattern equals text", TestRunner::patternEqualsText);
         run("duplicate and empty patterns rejected", TestRunner::invalidPatterns);
         run("matches naive search on random data", TestRunner::randomAgainstNaive);
+        run("matches KMP on random data", TestRunner::randomAgainstKmp);
         System.out.println(passed + " passed, " + failed + " failed");
         if (failed > 0) {
             System.exit(1);
@@ -131,6 +133,15 @@ public class TestRunner {
             String[] patterns = randomPatterns(random, 1 + random.nextInt(8));
             String text = randomString(random, random.nextInt(60), 3);
             assertEquals(naive(patterns, text), asSet(new AhoCorasick(patterns).search(text)));
+        }
+    }
+
+    private static void randomAgainstKmp() {
+        Random random = new Random(2);
+        for (int round = 0; round < 100; round++) {
+            String[] patterns = randomPatterns(random, 1 + random.nextInt(8));
+            String text = randomString(random, 200, 3);
+            assertEquals(Kmp.countAll(patterns, text), new AhoCorasick(patterns).count(text));
         }
     }
 }
