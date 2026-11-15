@@ -81,11 +81,11 @@ All times are in milliseconds.
 
 Time against the number of patterns, text length 100000:
 
-(results/plot_patterns.png)
+![Time vs number of patterns](results/plot_patterns.png)
 
 Time against text length, one panel for each number of patterns:
 
-(results/plot_text_length.png)
+![Time vs text length](results/plot_text_length.png)
 
 ## Complexity
 
